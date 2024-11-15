@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public class MemberRepository {
@@ -29,4 +31,14 @@ public class MemberRepository {
         return (Member) entityManager.createNativeQuery(sql, Member.class).getSingleResult();
     }
 
+
+    public List<Member> findMembers() {
+        String sql =
+                "SELECT * " +
+                "FROM members " +
+                        "LEFT JOIN member_books mb ON members.id = mb.member_id " +
+                        "WHERE DATE_PART('year', membership_date) = 2023 " +
+                        "AND mb.member_id is NULL";
+        return entityManager.createNativeQuery(sql, Member.class).getResultList();
+    }
 }
